@@ -21,6 +21,7 @@ val delay : Long = 20
 val rot : Float = 90f
 val balls : Int = 2
 val lines : Int = 2
+val backColor : Int = Color.parseColor("#BDBDBD")
 
 fun Int.inverse() : Float = 1f / this
 fun Float.maxScale(i : Int, n : Int) : Float = Math.max(0f, this - i * n.inverse())
@@ -175,26 +176,51 @@ class BiBallShooterView(ctx : Context) : View(ctx) {
             return this
         }
 
-        data class BiBallShooter(var i : Int) {
 
-            private var curr : BBSNode = BBSNode(0)
-            private var dir : Int = 1
+    }
 
-            fun draw(canvas : Canvas, paint : Paint) {
-                curr.draw(canvas, paint)
+    data class BiBallShooter(var i : Int) {
+
+        private var curr : BBSNode = BBSNode(0)
+        private var dir : Int = 1
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            curr.draw(canvas, paint)
+        }
+
+        fun update(cb : (Float) -> Unit) {
+            curr.update {
+                curr = curr.getNext(dir) {
+                    dir *= -1
+                }
+                cb(it)
             }
+        }
 
-            fun update(cb : (Float) -> Unit) {
-                curr.update {
-                    curr = curr.getNext(dir) {
-                        dir *= -1
-                    }
-                    cb(it)
+        fun startUpdating(cb : () -> Unit) {
+            curr.startUpdating(cb)
+        }
+    }
+
+    data class Renderer(var view : BiBallShooterView) {
+
+        private val animator : Animator = Animator(view)
+        private val bbs : BiBallShooter = BiBallShooter(0)
+        private val paint : Paint = Paint(Paint.ANTI_ALIAS_FLAG)
+
+        fun render(canvas : Canvas) {
+            canvas.drawColor(backColor)
+            bbs.draw(canvas, paint)
+            animator.animate {
+                bbs.update {
+                    animator.stop()
                 }
             }
+        }
 
-            fun startUpdating(cb : () -> Unit) {
-                curr.startUpdating(cb)
+        fun handleTap() {
+            bbs.startUpdating {
+                animator.start()
             }
         }
     }
