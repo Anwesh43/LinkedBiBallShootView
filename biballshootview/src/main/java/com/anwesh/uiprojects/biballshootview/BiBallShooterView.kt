@@ -226,4 +226,13 @@ class BiBallShooterView(ctx : Context) : View(ctx) {
             }
         }
     }
+
+    companion object {
+
+        fun create(activity : Activity) : BiBallShooterView {
+            val view : BiBallShooterView = BiBallShooterView(activity)
+            activity.setContentView(view)
+            return view
+        }
+    }
 }
