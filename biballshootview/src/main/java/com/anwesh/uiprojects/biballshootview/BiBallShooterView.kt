@@ -30,7 +30,7 @@ fun Float.sinify() : Float = Math.sin(this * Math.PI).toFloat()
 
 fun Canvas.drawBall(sf1 : Float, sf2 : Float, sf3 : Float, w : Float, h : Float, paint : Paint) {
     val r : Float = Math.min(w, h) / ballRFactor
-    for (j in 0..1) {
+    for (j in 0..(balls - 1)) {
         save()
         scale(1f, 1f - 2 * j)
         translate((h / 2 - r) - (h / 2 - 2 * r) * sf2 + (w / 2 - 2 * r) * sf3, 0f)
@@ -41,7 +41,7 @@ fun Canvas.drawBall(sf1 : Float, sf2 : Float, sf3 : Float, w : Float, h : Float,
 
 fun Canvas.drawLines(sf1 : Float, w : Float, h : Float, paint : Paint) {
     val r : Float = Math.min(w, h) / ballRFactor
-    for (j in 0..1) {
+    for (j in 0..(lines - 1)) {
         save()
         translate(r * (1 - 2 * j), 0f)
         drawLine(0f, -2 * r * sf1, 0f, 2 * r * sf1, paint)
